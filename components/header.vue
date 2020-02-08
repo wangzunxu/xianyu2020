@@ -14,10 +14,27 @@
       <router-link to="/hotel">酒店</router-link>
       <router-link to="/air">国内机票</router-link>
     </el-row>
-    <div class="user">
+    <div class="user"
+         v-if="!$store.state.user.userInfo.token">
       <a href="/user/login"
          style="height:60px;line-height:60px"> 登录/注册</a>
     </div>
+    <el-dropdown v-if="$store.state.user.userInfo.token">
+      <el-row type="flex"
+              align="middle"
+              class="el-dropdown-link"
+              style="height:60px;line-height:60px">
+        <nuxt-link to="#">
+          <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar"
+               width="36px"
+               height="36px"
+               style="margin:24px 10px 0 0" />
+        </nuxt-link>
+        {{$store.state.user.userInfo.user.nickname}}
+        <i class="el-icon-caret-bottom el-icon--right"></i>
+      </el-row>
+      <!-- 其他代码... -->
+    </el-dropdown>
   </el-row>
 </template>
 
