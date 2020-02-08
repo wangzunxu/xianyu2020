@@ -21,6 +21,7 @@
 
         <!-- 登录功能组件 -->
         <!-- <LoginForm v-if="currentTab == 0"/> -->
+        <LoginForm></LoginForm>
 
         <!-- 注册功能组件 -->
         <!-- <RegisterForm v-if="currentTab == 1"/> -->
@@ -30,7 +31,11 @@
 </template>
 
 <script>
+import LoginForm from "@/components/user/loginForm"
 export default {
+  components: {
+    LoginForm
+  },
   data () {
     return {
       tabsCorrent: 0
@@ -44,7 +49,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .container {
   background: url(http://157.122.54.189:9095/assets/images/th03.jfif) center 0;
   height: 700px;
