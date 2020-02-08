@@ -65,7 +65,7 @@ export default {
     this.$axios({
       url: "/scenics/banners"
     }).then(res => {
-      // console.log(res)
+      // console.log(this.$store.state.user.name)
       this.banners = res.data.data
     })
   }
