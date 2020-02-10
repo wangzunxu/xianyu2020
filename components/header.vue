@@ -35,7 +35,7 @@
         <i class="el-icon-caret-bottom el-icon--right">
         </i>
         <el-dropdown-menu>
-          <el-dropdown-item command="">个人中心</el-dropdown-item>
+          <el-dropdown-item disabled>个人中心</el-dropdown-item>
           <el-dropdown-item command="a">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-row>

@@ -140,7 +140,7 @@ export default {
         })
         return
       }
-      this.$store.dispatch("user/handleSendCaptcha", this.form.username).then(res => {
+      this.$store.dispatch("user/handleSendCaptcha").then(res => {
         this.$message({
           message: `验证码是：${res.data.code}`,
           type: "success"
