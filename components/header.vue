@@ -19,7 +19,8 @@
       <a href="/user/login"
          style="height:60px;line-height:60px"> 登录/注册</a>
     </div>
-    <el-dropdown v-if="$store.state.user.userInfo.token">
+    <el-dropdown v-if="$store.state.user.userInfo.token"
+                 @command="handleCommand">
       <el-row type="flex"
               align="middle"
               class="el-dropdown-link"
@@ -31,7 +32,12 @@
                style="margin:24px 10px 0 0" />
         </nuxt-link>
         {{$store.state.user.userInfo.user.nickname}}
-        <i class="el-icon-caret-bottom el-icon--right"></i>
+        <i class="el-icon-caret-bottom el-icon--right">
+        </i>
+        <el-dropdown-menu>
+          <el-dropdown-item command="">个人中心</el-dropdown-item>
+          <el-dropdown-item command="a">退出</el-dropdown-item>
+        </el-dropdown-menu>
       </el-row>
       <!-- 其他代码... -->
     </el-dropdown>
@@ -42,6 +48,15 @@
 export default {
   data () {
     return {
+    }
+  },
+  methods: {
+    handleCommand (command) {
+      this.$store.commit("user/setUserInfo", {})
+      this.$message({
+        message: "退出成功",
+        type: "success"
+      })
     }
   }
 }

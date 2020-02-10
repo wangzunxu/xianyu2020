@@ -13,7 +13,8 @@
                   class="form-item">
       <el-input v-model="ruleForm.password"
                 class="form-text"
-                placeholder="密码"></el-input>
+                placeholder="密码"
+                type="password"></el-input>
     </el-form-item>
     <el-form-item class="form-item">
       <el-button type="primary"

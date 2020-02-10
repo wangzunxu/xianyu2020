@@ -1,9 +1,9 @@
-export const state = {
+export const state = ()=> ({
   userInfo: {
     token:"",
     user: {}
   }
-}
+})
 export const mutations = {
   //保存用户信息到state
   setUserInfo(state,data) {
@@ -21,6 +21,15 @@ export const actions = {
       //保存到state
       commit("setUserInfo",data);
       return data
+    })
+  },
+   handleSendCaptcha(store,data) {
+    return this.$axios({
+      method: "POST",
+      url: "/captchas",
+      data: {
+        tel: data
+      }
     })
   }
 }
