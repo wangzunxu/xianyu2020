@@ -14,7 +14,9 @@
         <FlightsListHead></FlightsListHead>
 
         <!-- 航班信息 -->
-        <FlightsItem></FlightsItem>
+        <FlightsItem v-for="(item,index) in flightsData.flights"
+                     :key="index"
+                     :data="item"></FlightsItem>
       </div>
 
       <!-- 侧边栏 -->
@@ -32,8 +34,21 @@ export default {
   components: {
     FlightsListHead, FlightsItem
   },
+  data () {
+    return {
+      // 机票总数据
+      flightsData: {}
+    }
+  },
   mounted () {
-    // console.log(location.href)
+    // 请求机票列表数据
+    this.$axios({
+      url: "/airs",
+      params: this.$route.query
+    }).then(res => {
+      // console.log(res)
+      this.flightsData = res.data
+    })
   }
 }
 </script>

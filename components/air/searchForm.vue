@@ -39,7 +39,8 @@
                         placeholder="请选择日期"
                         style="width: 100%;"
                         @change="handleDate"
-                        v-model="form.departDate">
+                        v-model="form.departDate"
+                        :picker-options="pickerOptions">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="">
@@ -62,6 +63,12 @@ import moment from "moment"
 export default {
   data () {
     return {
+      pickerOptions: {
+        // 如果返回true表示可选
+        disabledDate (time) {
+          return time.getTime() < Date.now() - 1 * 24 * 60 * 60 * 1000;
+        }
+      },
       form: {
         departCity: '',
         departCode: '',
@@ -147,6 +154,7 @@ export default {
         return;
       }
       this.form.departCity = this.newDataDepart[0].value
+      this.form.departCode = this.newDataDepart[0].sort
     },
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
@@ -185,12 +193,14 @@ export default {
         return
       }
       this.form.destCity = this.newDataDest[0].value
+      this.form.destCode = this.newDataDest[0].sort
 
     },
     // 出发城市下拉选择时触发
     handleDepartSelect (item) {
       this.form.departCity = item.value
       this.form.departCode = item.sort
+      // console.log(item.sort)
     },
 
     // 目标城市下拉选择时触发
@@ -233,6 +243,7 @@ export default {
         //query是url的参数
         query: this.form
       })
+      console.log(this.form)
     }
   },
   mounted () {
