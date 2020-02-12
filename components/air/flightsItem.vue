@@ -1,6 +1,6 @@
 <template>
   <div class="flight-item">
-    <div>
+    <div @click="isShow=!isShow">
       <!-- 显示的机票信息 -->
       <el-row type="flex"
               align="middle"
@@ -35,7 +35,8 @@
         </el-col>
       </el-row>
     </div>
-    <div class="flight-recommend">
+    <div class="flight-recommend"
+         v-if="isShow">
       <!-- 隐藏的座位信息列表 -->
       <el-row type="flex"
               justify="space-between"
@@ -76,12 +77,18 @@ export default {
   // props的数组写法
   // props: ['data']
   // 推荐使用对象写法
+  data () {
+    return {
+      isShow: false
+
+    }
+  },
   props: {
     // 数据
     data: {
       type: Object,//声明data的类型
       // 默认是空数组
-      default: {} //如果组件使用时为传入值，则使用次默认值
+      default: {}, //如果组件使用时为传入值，则使用次默认值
     }
   },
   computed: {
