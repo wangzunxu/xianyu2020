@@ -89,18 +89,9 @@ export default {
         })
       }
     },
-
-    // 出发城市输入框获得焦点时触发
-    // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDepartSearch (value, cb) {
-      if (!value) {
-        //如果value是空的，把原来的列表清空
-        this.newDataDepart = []
-        // cb传入空数组，不会出现空白加载
-        cb([])
-        return
-      }
-      this.$axios({
+    // 封装到达城市和出发城市的请求函数
+    querySearch (value) {
+      return this.$axios({
         url: "/airs/city",
         params: {
           name: value
@@ -113,9 +104,41 @@ export default {
           // map返回的数组由return组成
           return v;
         })
+        return newData
+      })
+    },
+    // 出发城市输入框获得焦点时触发
+    // value 是选中的值，cb是回调函数，接收要展示的列表
+    queryDepartSearch (value, cb) {
+      if (!value) {
+        //如果value是空的，把原来的列表清空
+        this.newDataDepart = []
+        // cb传入空数组，不会出现空白加载
+        cb([])
+        return
+      }
+      //调用封装的代码
+      this.querySearch(value).then(newData => {
         this.newDataDepart = newData
         cb(newData)
       })
+      //未封装之前代码
+      // this.$axios({
+      //   url: "/airs/city",
+      //   params: {
+      //     name: value
+      //   }
+      // }).then(res => {
+      //   // 将数组中的data传给cb展示，data中没有value值，改造数据添加
+      //   const { data } = res.data
+      //   const newData = data.map(v => { //v是数组中的各项
+      //     v.value = v.name.replace("市", "");
+      //     // map返回的数组由return组成
+      //     return v;
+      //   })
+      //   this.newDataDepart = newData
+      //   cb(newData)
+      // })
       //cb 展示数组内容在列表
     },
     // 出发城市输入框失焦的时候触发，默认选择第一个
@@ -133,22 +156,27 @@ export default {
         cb([])
         return
       }
-      this.$axios({
-        url: "/airs/city",
-        params: {
-          name: value
-        }
-      }).then(res => {
-        // 将数组中的data传给cb展示，data中没有value值，改造数据添加
-        const { data } = res.data
-        const newData = data.map(v => { //v是数组中的各项
-          v.value = v.name.replace("市", "");
-          // map返回的数组由return组成
-          return v;
-        })
+      // 调用封装的代码
+      this.querySearch(value).then(newData => {
         this.newDataDest = newData
         cb(newData)
       })
+      // this.$axios({
+      //   url: "/airs/city",
+      //   params: {
+      //     name: value
+      //   }
+      // }).then(res => {
+      //   // 将数组中的data传给cb展示，data中没有value值，改造数据添加
+      //   const { data } = res.data
+      //   const newData = data.map(v => { //v是数组中的各项
+      //     v.value = v.name.replace("市", "");
+      //     // map返回的数组由return组成
+      //     return v;
+      //   })
+      //   this.newDataDest = newData
+      //   cb(newData)
+      // })
       //cb 展示数组内容在列表
     },
     //目标城市失焦时触发的事件
