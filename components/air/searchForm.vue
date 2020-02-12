@@ -16,25 +16,30 @@
              ref="form"
              label-width="80px">
       <el-form-item label="出发城市">
-        <!-- fetch-suggestions 返回输入建议的方法 -->
+        <!-- fetch-suggestions 返回输入建议的方法 监听输入框的输入 输入框变化的时候触发queryDepartSearch函数  在这个事件中请求api数据-->
         <!-- select 点击选中建议项时触发 -->
         <el-autocomplete :fetch-suggestions="queryDepartSearch"
                          placeholder="请搜索出发城市"
                          @select="handleDepartSelect"
-                         class="el-autocomplete"></el-autocomplete>
+                         class="el-autocomplete"
+                         v-model="form.departCity"
+                         @blur="handleDepartBlur"></el-autocomplete>
       </el-form-item>
       <el-form-item label="到达城市">
         <el-autocomplete :fetch-suggestions="queryDestSearch"
                          placeholder="请搜索到达城市"
                          @select="handleDestSelect"
-                         class="el-autocomplete"></el-autocomplete>
+                         class="el-autocomplete"
+                         v-model="form.destCity"
+                         @blur="handleDestBlur"></el-autocomplete>
       </el-form-item>
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
         <el-date-picker type="date"
                         placeholder="请选择日期"
                         style="width: 100%;"
-                        @change="handleDate">
+                        @change="handleDate"
+                        v-model="form.departDate">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="">
@@ -53,6 +58,7 @@
 </template>
 
 <script>
+import moment from "moment"
 export default {
   data () {
     return {
@@ -63,6 +69,9 @@ export default {
         destCode: '',
         departDate: ''
       },
+      // 出发城市列表
+      newDataDepart: [],
+      newDataDest: [],
       tabs: [
         { icon: "iconfont icondancheng", name: "单程" },
         { icon: "iconfont iconshuangxiang", name: "往返" }
@@ -73,52 +82,129 @@ export default {
   methods: {
     // tab切换时触发
     handleSearchTab (item, index) {
-
+      if (index === 1) {
+        this.$alert("目前暂不支持往返，请使用单程选票", "提示", {
+          confirmButtonText: "确定",
+          type: "warning"
+        })
+      }
     },
 
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch (value, cb) {
-      cb([
-        { value: 1 },
-        { value: 2 },
-        { value: 3 },
-      ]);
+      if (!value) {
+        //如果value是空的，把原来的列表清空
+        this.newDataDepart = []
+        // cb传入空数组，不会出现空白加载
+        cb([])
+        return
+      }
+      this.$axios({
+        url: "/airs/city",
+        params: {
+          name: value
+        }
+      }).then(res => {
+        // 将数组中的data传给cb展示，data中没有value值，改造数据添加
+        const { data } = res.data
+        const newData = data.map(v => { //v是数组中的各项
+          v.value = v.name.replace("市", "");
+          // map返回的数组由return组成
+          return v;
+        })
+        this.newDataDepart = newData
+        cb(newData)
+      })
+      //cb 展示数组内容在列表
     },
-
+    // 出发城市输入框失焦的时候触发，默认选择第一个
+    handleDepartBlur () {
+      if (this.newDataDepart.length === 0) {
+        return;
+      }
+      this.form.departCity = this.newDataDepart[0].value
+    },
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDestSearch (value, cb) {
-      cb([
-        { value: 1 },
-        { value: 2 },
-        { value: 3 },
-      ]);
+      if (!value) {
+        this.newDataDest = []
+        cb([])
+        return
+      }
+      this.$axios({
+        url: "/airs/city",
+        params: {
+          name: value
+        }
+      }).then(res => {
+        // 将数组中的data传给cb展示，data中没有value值，改造数据添加
+        const { data } = res.data
+        const newData = data.map(v => { //v是数组中的各项
+          v.value = v.name.replace("市", "");
+          // map返回的数组由return组成
+          return v;
+        })
+        this.newDataDest = newData
+        cb(newData)
+      })
+      //cb 展示数组内容在列表
     },
+    //目标城市失焦时触发的事件
+    handleDestBlur () {
+      if (this.newDataDest.length === 0) {
+        return
+      }
+      this.form.destCity = this.newDataDest[0].value
 
+    },
     // 出发城市下拉选择时触发
     handleDepartSelect (item) {
-
+      this.form.departCity = item.value
+      this.form.departCode = item.sort
     },
 
     // 目标城市下拉选择时触发
     handleDestSelect (item) {
-
+      this.form.destCity = item.value
+      this.form.destCode = item.sort
     },
 
     // 确认选择日期时触发
     handleDate (value) {
-
+      this.form.departDate = moment(value).format("YYYY-MM-DD")
     },
 
     // 触发和目标城市切换时触发
     handleReverse () {
-
+      const { departCity, departCode, destCity, destCode } = this.form
+      this.form.departCity = destCity
+      this.form.departCode = destCode
+      this.form.destCity = departCity
+      this.form.destCode = departCode
     },
 
     // 提交表单是触发
     handleSubmit () {
-
+      // console.log(this.form)
+      if (!this.form.departCity) {
+        this.$message.error("请输入出发城市")
+        return;
+      }
+      if (!this.form.destCity) {
+        this.$message.error("请输入到达城市")
+        return;
+      }
+      if (!this.form.departDate) {
+        this.$message.error("请输入出发时间")
+        return;
+      }
+      this.$router.push({
+        path: '/air/flights',
+        //query是url的参数
+        query: this.form
+      })
     }
   },
   mounted () {
