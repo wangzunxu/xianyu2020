@@ -62,10 +62,12 @@ export default {
         // 页面加载需要时间，影响子组件数据的传入
         // 给所使用的数据赋空值，避免报错
         info: {},
+        flights: [],
         options: {}
       },
       catchFlightsData: {
         info: {},
+        flights: [],
         options: {}
       },
       // opt: {

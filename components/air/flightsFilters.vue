@@ -103,54 +103,81 @@ export default {
   },
   computed: {
     filter () {
-      console.log(111111)
+      const newData = this.data.flights.filter(v => {
+        //假设当前数据符合条件
+        var vaild = true
+        // 找到不符合条件的
+        // 公司
+        if (this.company && v.airline_name !== this.company) {
+          vaild = false
+        }
+        // 机场
+        if (this.airport && v.org_airport_name !== this.airport) {
+          vaild = false
+        }
+        // 机型
+        if (this.airSize && v.plane_size !== this.airSize) {
+          vaild = false
+        }
+        // 起飞时间
+        if (this.flightTimes) {
+          // 选中的时间段
+          const arr = this.flightTimes.split(",")
+          //当前航班小时
+          const hour = Number(v.dep_time.split(":")[0]);
+          if (Number(arr[0] > hour) || hour >= Number(arr[1]))
+            vaild = false
+        }
+        return vaild
+      })
+      this.$emit("getData", newData)
       return ""
     }
   },
   methods: {
     // 选择机场时候触发
     handleAirport (value) {
-      console.log(this.data)
-      var newData = this.data.flights.filter(v => {
-        return v.org_airport_name === value
-      })
-      this.$emit("getData", newData)
+      // console.log(this.data)
+      // var newData = this.data.flights.filter(v => {
+      //   return v.org_airport_name === value
+      // })
+      // this.$emit("getData", newData)
     },
 
     // 选择出发时间时候触发
     handleFlightTimes (value) {
       // 筛选符合条件的数据
-      var time = value.split(",")
-      var newData = this.data.flights.filter(v => {
-        // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
-        // 出发的小时
-        var start = Number(v.dep_time.split(":")[0]);
+      // var time = value.split(",")
+      // var newData = this.data.flights.filter(v => {
+      //   // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
+      //   // 出发的小时
+      //   var start = Number(v.dep_time.split(":")[0]);
 
-        return Number(time[0]) < start && Number(time[1])
-      })
-      this.$emit("getData", newData)
+      //   return Number(time[0]) < start && Number(time[1])
+      // })
+      // this.$emit("getData", newData)
     },
 
     // 选择航空公司时候触发
     handleCompany (value) {
       // 筛选符合条件的数据
-      var newData = this.data.flights.filter(v => {
-        // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
-        return v.airline_name === value
-      })
-      // console.log(newData)
-      this.$emit("getData", newData)
+      // var newData = this.data.flights.filter(v => {
+      //   // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
+      //   return v.airline_name === value
+      // })
+      // // console.log(newData)
+      // this.$emit("getData", newData)
     },
 
     // 选择机型时候触发
     handleAirSize (value) {
-      // 筛选符合条件的数据
-      var newData = this.data.flights.filter(v => {
-        // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
-        return v.plane_size === value
-      })
-      // console.log(newData)
-      this.$emit("getData", newData)
+      // // 筛选符合条件的数据
+      // var newData = this.data.flights.filter(v => {
+      //   // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
+      //   return v.plane_size === value
+      // })
+      // // console.log(newData)
+      // this.$emit("getData", newData)
     },
 
     // 撤销条件时候触发
