@@ -6,9 +6,9 @@
             align="middle">
       <el-col :span="8">
         单程：
-        广州 - 上海
+        {{data.info.departCity}} - {{data.info.destCity}}
         /
-        2019-06-17
+        {{data.info.departDate}}
       </el-col>
       <el-col :span="4">
         <el-select size="mini"
@@ -28,7 +28,7 @@
                    placeholder="起飞时间"
                    @change="handleFlightTimes">
           <el-option :label="`${item.from}:00 - ${item.to}:00`"
-                     value="1"
+                     :value="`${item.from},${item.to}`"
                      v-for="(item,index) in data.options.flightTimes"
                      :key="index">
           </el-option>
@@ -69,6 +69,8 @@
         撤销
       </el-button>
     </div>
+    <!-- 渲染空的字符串，只需监听功能 -->
+    <span>{{filter}}</span>
   </div>
 </template>
 
@@ -99,15 +101,34 @@ export default {
       default: {}
     }
   },
+  computed: {
+    filter () {
+      console.log(111111)
+      return ""
+    }
+  },
   methods: {
     // 选择机场时候触发
     handleAirport (value) {
       console.log(this.data)
+      var newData = this.data.flights.filter(v => {
+        return v.org_airport_name === value
+      })
+      this.$emit("getData", newData)
     },
 
     // 选择出发时间时候触发
     handleFlightTimes (value) {
+      // 筛选符合条件的数据
+      var time = value.split(",")
+      var newData = this.data.flights.filter(v => {
+        // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
+        // 出发的小时
+        var start = Number(v.dep_time.split(":")[0]);
 
+        return Number(time[0]) < start && Number(time[1])
+      })
+      this.$emit("getData", newData)
     },
 
     // 选择航空公司时候触发
@@ -123,7 +144,13 @@ export default {
 
     // 选择机型时候触发
     handleAirSize (value) {
-
+      // 筛选符合条件的数据
+      var newData = this.data.flights.filter(v => {
+        // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
+        return v.plane_size === value
+      })
+      // console.log(newData)
+      this.$emit("getData", newData)
     },
 
     // 撤销条件时候触发

@@ -7,7 +7,7 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <!-- 父传子 传入机票总数据 -->
-        <FlightsFilters :data="flightsData"
+        <FlightsFilters :data="catchFlightsData"
                         @getData="getData"></FlightsFilters>
         <div>
 
@@ -64,6 +64,10 @@ export default {
         info: {},
         options: {}
       },
+      catchFlightsData: {
+        info: {},
+        options: {}
+      },
       // opt: {
       //   airport: []
       // },
@@ -109,6 +113,7 @@ export default {
       this.flightsData = res.data
       // this.opt = res.data.options
       // console.log(this.opt)
+      this.catchFlightsData = { ...res.data }
     })
   }
 }
