@@ -7,7 +7,8 @@
       <div class="flights-content">
         <!-- 过滤条件 -->
         <!-- 父传子 传入机票总数据 -->
-        <FlightsFilters :data="flightsData"></FlightsFilters>
+        <FlightsFilters :data="flightsData"
+                        @getData="getData"></FlightsFilters>
         <div>
 
         </div>
@@ -92,6 +93,11 @@ export default {
     },
     handleCurrentChange (value) {
       this.pageIndex = value
+    },
+    // arr是过滤后的数组
+    getData (arr) {
+      this.flightsData.flights = arr
+      this.flightsData.total = arr.length
     }
   },
   mounted () {

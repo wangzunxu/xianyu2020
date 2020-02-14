@@ -115,8 +115,10 @@ export default {
       // 筛选符合条件的数据
       var newData = this.data.flights.filter(v => {
         // return后面条件的值如果为true，则返回符合条件的新数组(原数组flights)
-        return v.airline_name = value
+        return v.airline_name === value
       })
+      // console.log(newData)
+      this.$emit("getData", newData)
     },
 
     // 选择机型时候触发
