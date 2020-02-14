@@ -6,6 +6,8 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
+        <!-- 父传子 传入机票总数据 -->
+        <FlightsFilters :data="flightsData"></FlightsFilters>
         <div>
 
         </div>
@@ -47,14 +49,23 @@
 <script>
 import FlightsListHead from "@/components/air/flightsListHead"
 import FlightsItem from "@/components/air/flightsItem"
+import FlightsFilters from "@/components/air/flightsFilters"
 export default {
   components: {
-    FlightsListHead, FlightsItem
+    FlightsListHead, FlightsItem, FlightsFilters
   },
   data () {
     return {
       // 机票总数据
-      flightsData: {},
+      flightsData: {
+        // 页面加载需要时间，影响子组件数据的传入
+        // 给所使用的数据赋空值，避免报错
+        info: {},
+        options: {}
+      },
+      // opt: {
+      //   airport: []
+      // },
       // 当前页数
       pageIndex: 1,
       pageSize: 5,
@@ -89,8 +100,9 @@ export default {
       url: "/airs",
       params: this.$route.query
     }).then(res => {
-      // console.log(res)
       this.flightsData = res.data
+      // this.opt = res.data.options
+      // console.log(this.opt)
     })
   }
 }
