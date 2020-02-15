@@ -60,7 +60,8 @@
             <el-col :span="3"
                     class="choose-button">
               <el-button type="warning"
-                         size="mini">
+                         size="mini"
+                         @click="handleToOrder(item)">
                 选定
               </el-button>
               <p>剩余：{{item.discount}}</p>
@@ -89,6 +90,20 @@ export default {
       type: Object,//声明data的类型
       // 默认是空数组
       default: {}, //如果组件使用时为传入值，则使用次默认值
+    }
+  },
+  methods: {
+    // 跳转到订单页
+    handleToOrder (item) {
+      // 后台需要航班id和座位号id
+      console.log(item)
+      this.$router.push({
+        path: '/air/order',
+        query: {
+          id: this.data.id,
+          seat_xid: item.seat_id
+        }
+      })
     }
   },
   computed: {
