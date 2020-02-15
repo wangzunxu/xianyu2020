@@ -120,13 +120,23 @@ export default {
     }
   },
   // watch、data、computed中的变量不用加this
-  watch: {
-    $route () {
-      // 请求机票列表数据
-      // 每次url变化，数据刷新的前，初始化当前显示的页面为1，避免多页影响少页的bug
-      this.pageIndex = 1
-      this.getList()
-    }
+  // watch: {
+  //   $route () {
+  //     // 请求机票列表数据
+  //     // 每次url变化，数据刷新的前，初始化当前显示的页面为1，避免多页影响少页的bug
+  //     this.pageIndex = 1
+  //     this.getList()
+  //   }
+  // },
+  // 使用导航守卫监听，beforeRouteEnter、beforeRouteUpload、beforeRouteLeave （to，from，next）
+  // to将要跳转的页面，from要离开的页面，next（）必须要调用的（理解为执行） 
+  // 在当前页面路径改变，但该组件被调复用时调用
+  beforeRouteUpdate (to, from, next) {
+    // 请求机票列表数据
+    //     // 每次url变化，数据刷新的前，初始化当前显示的页面为1，避免多页影响少页的bug
+    this.pageIndex = 1
+    this.getList();
+    next()
   },
   mounted () {
     // 请求机票列表数据
