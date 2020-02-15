@@ -210,7 +210,19 @@ export default {
           this.$message.error(item.errorMessage)
         }
       })
+      // 如果没全部通过就不执行，否则，提交代码
       if (!valid) return
+      // 提交订单
+      this.$axios({
+        url:"/airorders",
+        method:"POST",
+        data:this.form,
+        headers:{
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res=>{
+        console.log(res)
+      })
     }
   }
 }
