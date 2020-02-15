@@ -49,7 +49,8 @@
              v-for="(item,index) in infoData.insurances"
              :key="index">
           <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
-                       border>
+                       border
+                       @change="handleInsurance(item.id)">
           </el-checkbox>
         </div>
       </div>
@@ -122,6 +123,17 @@ export default {
         username: '',
         id: ''
       })
+    },
+    handleInsurance (id) {
+      //先判断数组中是否存在该id，如果存在说明这个操作是要取消，反之，添加
+      const index = this.form.insurances.indexOf(id);
+      if (index > -1) {
+        // 删除此id
+        this.form.insurances.splice(index, 1)
+      } else {
+        // 没有次id，就添加进数组
+        this.form.insurances.push(id)
+      }
     },
 
     // 移除乘机人
