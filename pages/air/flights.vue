@@ -25,6 +25,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
+        <FlightsAside></FlightsAside>
       </div>
     </el-row>
     <el-row type="flex"
@@ -51,9 +52,10 @@
 import FlightsListHead from "@/components/air/flightsListHead"
 import FlightsItem from "@/components/air/flightsItem"
 import FlightsFilters from "@/components/air/flightsFilters"
+import FlightsAside from "@/components/air/flightsAside"
 export default {
   components: {
-    FlightsListHead, FlightsItem, FlightsFilters
+    FlightsListHead, FlightsItem, FlightsFilters, FlightsAside
   },
   data () {
     return {
@@ -104,19 +106,31 @@ export default {
     getData (arr) {
       this.flightsData.flights = arr
       this.flightsData.total = arr.length
+    },
+    getList () {
+      this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        this.flightsData = res.data
+        // this.opt = res.data.options
+        // console.log(this.opt)
+        this.catchFlightsData = { ...res.data }
+      })
+    }
+  },
+  // watch、data、computed中的变量不用加this
+  watch: {
+    $route () {
+      // 请求机票列表数据
+      // 每次url变化，数据刷新的前，初始化当前显示的页面为1，避免多页影响少页的bug
+      this.pageIndex = 1
+      this.getList()
     }
   },
   mounted () {
     // 请求机票列表数据
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      this.flightsData = res.data
-      // this.opt = res.data.options
-      // console.log(this.opt)
-      this.catchFlightsData = { ...res.data }
-    })
+    this.getList()
   }
 }
 </script>

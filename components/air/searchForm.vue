@@ -238,12 +238,14 @@ export default {
         this.$message.error("请输入出发时间")
         return;
       }
+      // 调用仓库中的方法，传用户所选的信息给历史记录
+      this.$store.commit("air/setHistory", this.form)
       this.$router.push({
         path: '/air/flights',
         //query是url的参数
         query: this.form
       })
-      console.log(this.form)
+      // console.log(this.form)
     }
   },
   mounted () {
