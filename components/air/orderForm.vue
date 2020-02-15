@@ -9,7 +9,8 @@
 
           <el-form-item label="乘机人类型">
             <el-input placeholder="姓名"
-                      class="input-with-select">
+                      class="input-with-select"
+                      v-model="form.users[index].username">
               <el-select slot="prepend"
                          value="1"
                          placeholder="请选择">
@@ -21,7 +22,8 @@
 
           <el-form-item label="证件类型">
             <el-input placeholder="证件号码"
-                      class="input-with-select">
+                      class="input-with-select"
+                      v-model="form.users[index].id">
               <el-select slot="prepend"
                          value="1"
                          placeholder="请选择">
@@ -61,11 +63,12 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容"
+                      v-model="form.contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -73,7 +76,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning"
@@ -91,11 +94,12 @@ export default {
       // 后台需要的数据
       form: {
         users: [
-          { username: '', id: '' }
+          { username: '', id: '' }//不能为空
         ],//用户列表
-        insurances: [],//保险id
+        insurances: [],//保险id 可以为空
         contactName: '',//联系人名字
         contactPhone: '',//联系电话
+        captcha: '',
         invoice: false,//是否需要发票
         seat_xid: this.$route.query.seat_xid,
         air: this.$route.query.id
@@ -143,12 +147,70 @@ export default {
 
     // 发送手机验证码
     handleSendCaptcha () {
-
+      // 判断手机号码是否填写
+      if (!this.form.contactPhone) {
+        this.$message.error("手机号码不能为空")
+        return
+      }
+      this.$store.dispatch('user/handleSendCaptcha', this.form.contactPhone).then(res => {
+        this.$message.success("验证码发送成功：000000")
+      })
     },
 
     // 提交订单
     handleSubmit () {
-
+      // 自定义表单验证
+      const rules = {
+        // 校验用户信息
+        users: {
+          errorMessage: "乘机人信息不能为空",
+          //返回值是true通过，否则失败
+          validator: () => {
+            var valid = true
+            // 两个属性只要有一个是空的就判断不通过
+            this.form.users.forEach(v => {
+              if (!v.username || !v.id) {
+                valid = false
+              }
+            })
+            return valid
+          }
+        },
+        // 校验联系人
+        contactName: {
+          errorMessage: "联系人不能为空",
+          validator: () => {
+            return !!this.form.contactName
+          }
+        },
+        // 校验手机号码
+        contactName: {
+          errorMessage: "手机号码不能为空",
+          validator: () => {
+            return !!this.form.contactPhone
+          }
+        },
+        // 校验验证码
+        contactName: {
+          errorMessage: "验证码不能为空",
+          validator: () => {
+            return !!this.form.captcha
+          }
+        }
+      }
+      //循环rules对象，判断信息是否全部验证通过
+      // Object.keys返回对象中的key（返回一个由对象中所有属性的key组成的数组） 可以用for in
+      let valid = true
+      Object.keys(rules).forEach(v => {
+        // 假设所有的校验都是通过的
+        if (!valid) return;   //forEach map filter 不能用breake中断 for循环可以  return只阻止后面代码的解析，不中断循环  
+        const item = rules[v]
+         valid = item.validator();//validator是个函数要加（）
+        if (!valid) {
+          this.$message.error(item.errorMessage)
+        }
+      })
+      if (!valid) return
     }
   }
 }
