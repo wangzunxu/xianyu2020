@@ -6,7 +6,8 @@ export const state = () => {
     // 订单详情
     orderDetail:{
       seat_infos: {}
-    }
+    },
+    allPrice:0
   }
 }
 
@@ -19,5 +20,9 @@ export const mutations = {
   // 修改oderInfo的方法
   setOrderDetail(state,data) {
     state.orderDetail = data
+  },
+  //修改总价格
+  setAllPrice(state,data) {
+    state.allPrice = data
   }
 }

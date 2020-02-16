@@ -83,6 +83,7 @@
                    class="submit"
                    @click="handleSubmit">提交订单</el-button>
       </div>
+      {{allPrice}}
     </div>
   </div>
 </template>
@@ -106,6 +107,29 @@ export default {
       },
       //当前机票的详细信息
       infoData: {}
+    }
+  },
+  computed: {
+    // 计算总价格
+    allPrice () {
+      // 判断是否有数据
+      if (!this.infoData.seat_infos) return
+      let price = 0;
+      // 票价
+      price += this.infoData.seat_infos.org_settle_price;
+      // 燃油费
+      price += this.infoData.airport_tax_audlet;
+      // 保险
+      this.infoData.insurances.forEach(v => {
+        //判断保险的id是否在数组里
+        if (this.form.insurances.indexOf(v.id) > -1) {   //数组.indexOf(id) id不存在返回-1，否则返回0
+          price += v.price
+        }
+      })
+      //人数
+      price *= this.form.users.length
+      this.$store.commit("air/setAllPrice", price)
+      return '';
     }
   },
   mounted () {
