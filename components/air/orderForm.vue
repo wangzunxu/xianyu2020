@@ -118,6 +118,9 @@ export default {
     }).then(res => {
       //赋值给机票详细信息
       this.infoData = res.data
+
+      // 把订单详情存到store
+      this.$store.commit("air/setOrderDetail", this.infoData)
     })
   },
   methods: {
@@ -222,7 +225,7 @@ export default {
         }
       }).then(res => {
         // console.log(res)
-
+        this.$message.success("订单提交成功")
       })
     }
   }

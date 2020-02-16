@@ -2,7 +2,11 @@ export const state = () => {
   // 点击机票首页搜索按钮的时候，将表单信息传给机票列表侧边栏
   return {
     //历史查询数组
-    history:[]
+    history:[],
+    // 订单详情
+    orderDetail:{
+      seat_infos: {}
+    }
   }
 }
 
@@ -11,5 +15,9 @@ export const mutations = {
     // 在搜索跳转之前调用方法传值
   setHistory(state,data) {
     state.history.unshift(data)
+  },
+  // 修改oderInfo的方法
+  setOrderDetail(state,data) {
+    state.orderDetail = data
   }
 }
