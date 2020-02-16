@@ -49,14 +49,11 @@ export default {
         //使用仓库里的方法进行登录操作
         this.$store.dispatch("user/login", this.ruleForm).then(() => {
           //成功提示
-          this.$message({
-            message: "登录成功，正在跳转",
-            type: "success"
-          })
-          setTimeout(() => {
-            // 登录成功后应该返回之前的页面，次选才是首页
-            this.$router.replace(this.$route.query.returnUrl)
-          }, 2000)
+          this.$message.success("登录成功，正在跳转")
+          // console.log(this.$route)
+          // 登录成功后应该返回之前的页面，次选才是首页
+          this.$router.replace(this.$route.query.returnUrl || '/')
+
         })
       })
     }

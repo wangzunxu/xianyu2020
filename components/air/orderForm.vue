@@ -205,7 +205,7 @@ export default {
         // 假设所有的校验都是通过的
         if (!valid) return;   //forEach map filter 不能用breake中断 for循环可以  return只阻止后面代码的解析，不中断循环  
         const item = rules[v]
-         valid = item.validator();//validator是个函数要加（）
+        valid = item.validator();//validator是个函数要加（）
         if (!valid) {
           this.$message.error(item.errorMessage)
         }
@@ -214,14 +214,15 @@ export default {
       if (!valid) return
       // 提交订单
       this.$axios({
-        url:"/airorders",
-        method:"POST",
-        data:this.form,
-        headers:{
+        url: "/airorders",
+        method: "POST",
+        data: this.form,
+        headers: {
           Authorization: `Bearer ` + this.$store.state.user.userInfo.token
         }
-      }).then(res=>{
-        console.log(res)
+      }).then(res => {
+        // console.log(res)
+
       })
     }
   }
