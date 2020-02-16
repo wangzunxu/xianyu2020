@@ -9,5 +9,15 @@ export default (data) => {
     if(statusCode===400) {
       Message.error(message)
     }
+    // 当前请求的token有问题，对于案例的接口：401 token传递是错误的，403没有传token
+    if(statusCode===401||statusCode===403) {
+      // 跳转到登录页 当前文件不是组件不能用this.$router
+      // location.href("") 不推荐
+      // 重定向
+      // 状态码，跳转路径，完整路径query
+      data.redirect(200,'/user/login',{
+        returnUrl:data.route.fullPath
+      })
+    }
   })
 }

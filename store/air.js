@@ -10,6 +10,6 @@ export const mutations = {
     // 把传入的表单存储到history中
     // 在搜索跳转之前调用方法传值
   setHistory(state,data) {
-    state.history.push(data)
+    state.history.unshift(data)
   }
 }

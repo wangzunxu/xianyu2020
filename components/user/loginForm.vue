@@ -54,7 +54,8 @@ export default {
             type: "success"
           })
           setTimeout(() => {
-            this.$router.replace("/")
+            // 登录成功后应该返回之前的页面，次选才是首页
+            this.$router.replace(this.$route.query.returnUrl)
           }, 2000)
         })
       })

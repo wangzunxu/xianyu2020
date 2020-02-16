@@ -134,9 +134,9 @@ export default {
   beforeRouteUpdate (to, from, next) {
     // 请求机票列表数据
     //     // 每次url变化，数据刷新的前，初始化当前显示的页面为1，避免多页影响少页的bug
+    next() //先跳转再拿数据，否则会拿到上一个历史记录
     this.pageIndex = 1
     this.getList();
-    next()
   },
   mounted () {
     // 请求机票列表数据
