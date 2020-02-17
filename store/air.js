@@ -16,6 +16,8 @@ export const mutations = {
     // 在搜索跳转之前调用方法传值
   setHistory(state,data) {
     state.history.unshift(data)
+    // state.history.slice(-5,-1)
+    // console.log(state.history)
   },
   // 修改oderInfo的方法
   setOrderDetail(state,data) {

@@ -30,7 +30,7 @@
       <!-- 需要循环的链接标签 -->
       <!-- 点击链接没有跳转，因为mounted只执行了一次（组件缓存，没有被销毁，？后的改变前面的组件名没改变） 解决方法监听route -->
       <nuxt-link :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"
-                 v-for="(item,index) in $store.state.air.history"
+                 v-for="(item,index) in $store.state.air.history.slice(0,5)"
                  :key="index">
         <el-row type="flex"
                 justify="space-between"
@@ -49,8 +49,8 @@
 
 <script>
 export default {
-  mounted () {
-    // console.log(this.$store.state.history)
+  data () {
+    return {}
   }
 }
 </script>
