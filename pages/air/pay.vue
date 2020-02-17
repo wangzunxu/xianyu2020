@@ -33,7 +33,8 @@ export default {
   data () {
     return {
       // 订单详情
-      orderDetial: {}
+      orderDetial: {},
+      timer: ''
     }
   },
   mounted () {
@@ -59,8 +60,46 @@ export default {
         QRCode.toCanvas(canvas, code_url, {
           width: 200
         })
+        //查询付款状态，扫码付款后应该自动执行，所以要放在mounted里，mounted只执行1次，所以用setInteval，并在支付成功后停止
+        this.timer = setInterval(() => {
+          this.isPay();
+        }, 3000)
       })
     }, 0)
+  },
+  // 组件销毁时触发，去别的页面不需要此定时器
+  destroyed () {
+    clearInterval(this.timer)
+  },
+  methods: {
+    isPay () {
+      // 获取接口需要的信息
+      const { id, price, orderNo } = this.orderDetial
+      // 发送查询请求
+      this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        data: {
+          id,
+          nonce_str: price,
+          out_trade_no: orderNo
+        },
+        headers: {
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        // console.log(res)
+        // 支付完成是停止定时器
+        if (res.data.statusTxt == "支付完成") {
+          clearInterval(timer)
+          // 支付成果弹窗
+          this.$alert("支付成功，谢谢", "提示", {
+            type: "success",
+            confirmButtonText: "确定"
+          })
+        }
+      })
+    }
   }
 }
 </script>
