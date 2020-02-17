@@ -2,7 +2,7 @@
   <div class="container">
     <div class="main">
       <div class="pay-title">
-        支付总金额 <span class="pay-price">￥ 1000</span>
+        支付总金额 <span class="pay-price">￥ {{$store.state.air.allPrice}}</span>
       </div>
       <div class="pay-main">
         <h4>微信支付</h4>
@@ -27,7 +27,15 @@
 </template>
 
 <script>
+// 导入生成二维码的插件
+import QRCode from "qrcode"
 export default {
+  data () {
+    return {
+      // 订单详情
+      orderDetial: {}
+    }
+  },
   mounted () {
     // 请求支付数据
     // 组件加载比仓库快，组件加载过程中使用到仓库的token，但是仓库还没加载完。延迟使用仓库中的token可以解决问题
@@ -35,12 +43,22 @@ export default {
     // mounted中使用仓库加setTimeout
     setTimeout(() => {
       this.$axios({
-        url: 'airorders' + this.$route.query.id,
+        url: 'airorders/' + this.$route.query.id,
         headers: {
-          Authorization: `Bear ` + this.$store.state.user.userInfo.token
+          Authorization: `Bearer ` + this.$store.state.user.userInfo.token
         }
       }).then(res => {
-        console.log(res)
+        this.orderDetial = res.data
+        // console.log(res)
+        //付款二维码的链接
+        const { code_url } = this.orderDetial.payInfo
+        const canvas = document.getElementById("qrcode-stage")
+        //第一个参数dom元素，要渲染的地方 
+        // 第二个参数，要生成为二维码的链接 
+        // 第三个参数（可选），样式设置
+        QRCode.toCanvas(canvas, code_url, {
+          width: 200
+        })
       })
     }, 0)
   }
